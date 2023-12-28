@@ -20,14 +20,14 @@ while(True):
     red_mask = cv2.inRange(hsvFrame, red_lower, red_upper) 
     #hsv değerleri genel olarak belli değil o yüzden dene-yanıl ile kendime en iyi değerleri bu şekilde buldum
     
-    green_lower = np.array([50, 60,60]) 
+    green_lower = np.array([35, 40,40]) 
     green_upper = np.array([70, 255, 255]) 
     green_mask = cv2.inRange(hsvFrame, green_lower, green_upper) 
     
 
     
-    blue_lower = np.array([110, 60, 50], np.uint8) 
-    blue_upper = np.array([130, 255, 255], np.uint8) 
+    blue_lower = np.array([100, 60, 60], np.uint8) 
+    blue_upper = np.array([120, 180, 180], np.uint8) 
     blue_mask = cv2.inRange(hsvFrame, blue_lower, blue_upper) 
     #5x5 matrix oluşturarak dilate ettiğimiz görüntüleri buraya aktarıyoruz
     kernel = np.ones((5, 5), np.uint8) 
@@ -36,18 +36,14 @@ while(True):
     green_mask=cv2.dilate(green_mask,kernel)
     blue_mask=cv2.dilate(blue_mask,kernel)
     
+
     
     
-    #
+    #burada maskladığımız görüntülerin sınırlarını okuyoruz thresholda gerek olduğunu düşünmedim zaten maskın kendisi siyah beyazdı
     contourred,hiearchy=cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
-    
-    
-    
     contourgreen,hiearchy=cv2.findContours(green_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
-    
     contourblue,hiearchy=cv2.findContours(blue_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    #countourladığımız cisimleri kare içine alıyoruz kare içine aldığımız şekillerin hangi renkte olduğunu ve x-y koordinatında nerede olduğunu gösteriyoruz
     for i in range(len(contourred)):
         if cv2.contourArea(contourred[i]) > 1000: 
             (x, y, w, h) = cv2.boundingRect(contourred[i])
@@ -71,8 +67,8 @@ while(True):
                                                           
     
     
-    
-    if cv2.waitKey(10) & 0xFF == ord('q'): 
+    #q ya basarsak kamerayı ve uygulamayı kapatmasını soyluyoruz cv2.waitkey(1) olsa da olur bekleme suresi olarak geçiyor
+    if cv2.waitKey(1) & 0xFF == ord('q'): 
         webcam.release() 
         cv2.destroyAllWindows() 
         break
